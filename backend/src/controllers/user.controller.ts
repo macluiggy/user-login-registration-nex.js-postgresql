@@ -114,15 +114,15 @@ const userById = async (
   req: RequestWithProfile,
   res: Response,
   next: NextFunction,
-  id: any
+  userId: any // this is where the parameter is passed, you can name it anything
 ) => {
   try {
     const { rows } = await pool.query("SELECT * FROM users WHERE _id = $1", [
-      id,
+      userId,
     ]);
     // console.log(user, "this is from userById");
     const user = rows[0];
-    console.log(user);
+    // console.log(user);
     if (!user) {
       // if the user is not found
       return res.status(400).json({
@@ -130,7 +130,9 @@ const userById = async (
         error: "User not found",
       });
     }
+    if (!user.updated) delete user.updated;
     req.profile = user; // add the user to the request object
+    // console.log(req.user, "para comprobar que existe");
     next();
   } catch (error: any) {
     console.log(error);
@@ -194,20 +196,39 @@ const update = async (req: RequestWithProfile, res: Response) => {
     updatedUser.hashed_password = undefined;
     // console.log(updatedUser);
     updatedUser.salt = undefined;
-    return res.json(updatedUser);
+    return res.json({ message: "User updated successfully", updatedUser });
   } catch (error: any) {
     return res.status(400).json({
       error: error.message,
     });
   }
 };
+// const remove = async (req: RequestWithProfile, res: Response) => {
+//   try {
+//     let user = req.profile;
+//     if (!user) return res.status(400).json({ error: "User not found" });
+//     let deletedUser = await user.remove();
+//     deletedUser.hashed_password = undefined;
+//     deletedUser.salt = undefined;
+//     return res.json({ message: "User deleted successfully", deletedUser });
+//   } catch (error) {
+//     return res.status(400).json({
+//       error: dbErrorHandler.getErrorMessage(error),
+//     });
+//   }
+// };
 const remove = async (req: RequestWithProfile, res: Response) => {
   try {
     let user = req.profile;
-    if (!user) return res.status(400).json({ error: "User not found" });
-    let deletedUser = await user.remove();
+    if (!user) return res.status(400).json({ error: "User not found xxx" });
+    let { rows } = await pool.query(
+      "DELETE FROM users WHERE _id = $1 RETURNING *",
+      [user._id]
+    );
+    const deletedUser = rows[0];
     deletedUser.hashed_password = undefined;
     deletedUser.salt = undefined;
+    if (!deletedUser.updated) delete deletedUser.updated;
     return res.json({ message: "User deleted successfully", deletedUser });
   } catch (error) {
     return res.status(400).json({
@@ -215,5 +236,4 @@ const remove = async (req: RequestWithProfile, res: Response) => {
     });
   }
 };
-
 export { create, list, userById, read, remove, update }; // the order of exporting is not important
