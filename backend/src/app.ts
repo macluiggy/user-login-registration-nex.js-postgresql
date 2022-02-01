@@ -40,7 +40,7 @@ app.get("/", (req, res) => {
 });
 //routes
 app.use("/", indexRoute);
-app.use("/", userRoutes);
+app.use("/api", userRoutes);
 app.use("/", authRoutes);
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "UnauthorizedError")

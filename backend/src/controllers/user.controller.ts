@@ -1,34 +1,76 @@
 import User from "../models/user.model";
 import extend from "lodash/extend";
-import dbErrorHandler from "../helpers/dbErrorHandler";
+import dbErrorHandler from "../middleware/dbErrorHandler";
 import { RequestHandler, Response, Request, NextFunction } from "express";
 import { RequestWithProfile } from "../types";
+import pool from "../db";
+import bcrypt from "bcrypt";
+import jwtGenerator from "../utils/jwtGenerator";
 
+// const create: RequestHandler = async (req, res, next) => {
+//   const { body } = req;
+//   const user = new User(body);
+//   try {
+//     const newUser = await user.save();
+//     newUser.hashed_password = undefined;
+//     newUser.salt = undefined;
+//     return res
+//       .status(200)
+//       .json({ message: "Successfully signed up!", newUser });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(400).json({
+//       error: dbErrorHandler.getErrorMessage(error),
+//     });
+//   }
+// };
 const create: RequestHandler = async (req, res, next) => {
   const { body } = req;
-  const user = new User(body);
+  const { name, email, password } = body;
   try {
-    const newUser = await user.save();
-    newUser.hashed_password = undefined;
-    newUser.salt = undefined;
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const bcryptPassword = await bcrypt.hash(password, salt);
+    //4. enter the user in the database
+    const { rows: newUser } = await pool.query(
+      "INSERT INTO users (name, email, hashed_password, salt) VALUES ($1, $2, $3, $4) RETURNING *",
+      [name, email, bcryptPassword, salt]
+    );
+    newUser[0].hashed_password = undefined;
+    newUser[0].salt = undefined;
     return res
       .status(200)
-      .json({ message: "Successfully signed up!", newUser });
-  } catch (error) {
+      .json({ message: "Successfully signed up!", newUser: newUser[0] });
+  } catch (error: any) {
     console.log(error);
     return res.status(400).json({
       error: dbErrorHandler.getErrorMessage(error),
     });
   }
 };
-
-const list: RequestHandler = async (_, res) => {
+// const list: RequestHandler = async (_, res) => {
+//   try {
+//     const users = await User.find().select("name email updated created"); // find all users, and only select the name, email, updated and created fields, this filter also will be applied when retrieving a single user by id
+//     return res.json(users);
+//   } catch (error) {
+//     return res.status(400).json({
+//       error: dbErrorHandler.getErrorMessage(error),
+//     });
+//   }
+// };
+const list: RequestHandler = async (_req, res) => {
   try {
-    const users = await User.find().select("name email updated created"); // find all users, and only select the name, email, updated and created fields, this filter also will be applied when retrieving a single user by id
+    let { rows: users } = await pool.query(
+      "SELECT _id, name, email, updated, created FROM users"
+    );
+    users = users.map((user) => {
+      if (!user.updated) delete user.updated;
+      return user;
+    });
     return res.json(users);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(400).json({
-      error: dbErrorHandler.getErrorMessage(error),
+      error: error.message,
     });
   }
 };

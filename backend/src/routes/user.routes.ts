@@ -11,18 +11,19 @@ import {
   update,
   userById,
 } from "../controllers/user.controller";
+import validinfo from "../middleware/validinfo";
 
 const router = Router();
 
-router.route("/api/users").get(list).post(create);
+router.route("/users").get(list).post(validinfo, create);
 
 router
-  .route("/api/users/:userId")
+  .route("/users/:userId")
   .get(requireSignin, read)
   .put(requireSignin, hasAuthorization, update)
   .delete(requireSignin, hasAuthorization, remove);
 
-router.route("/api/").put((req, res) => {
+router.route("/").put((req, res) => {
   console.log(req.body);
 
   res.json(req.body);
