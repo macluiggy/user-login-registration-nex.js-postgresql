@@ -42,14 +42,11 @@ const signin: RequestHandler = async (req, res) => {
       email,
     ]); // find the user by email
     const user = rows[0];
-    if (!user)
-      return res
-        .status(401)
-        .json({ error: "Email or password don't match: email" }); // if the user is not found
+    if (!user) return res.status(401).json({ error: "User not found" }); // if the user is not found
     const { hashed_password } = user;
     if (!(await authenticate(password, hashed_password)))
       // if tpassword dont match
-      return res.status(401).json({ error: "Email or password don't match" });
+      return res.status(401).json({ error: "Email and password don't match" });
 
     const token = jwt.sign({ _id }, jwtSecret); // create a token with the user id and the secret
 
