@@ -80,7 +80,13 @@ const requireSignin = expressJwt({
 //   req: RequestWithAuth & RequestWithProfile,
 //   res: Response,
 //   next: NextFunction
-// ) => {};
+// ) => {
+//   const jwtToken = req.header("token");
+//   const payload = jwt.verify(jwtToken as string, jwtSecret);
+//   console.log(payload, "payload");
+//   req.auth = payload;
+//   next();
+// }; // por alguna razon esto da lo mismo que el de arriba
 
 const hasAuthorization = (
   req: RequestWithAuth & RequestWithProfile,
