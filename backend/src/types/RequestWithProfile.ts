@@ -17,6 +17,8 @@ export interface RequestWithProfile extends Request {
     updated?: Date | number;
     salt: string | undefined;
     hashed_password: string | undefined;
+    // save?: any;
+    // remove?: any;
   } | null;
 }
 // export interface RequestHandlerWithProfile {

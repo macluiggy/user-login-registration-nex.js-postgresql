@@ -7,6 +7,12 @@ import pool from "../db";
 import bcrypt from "bcrypt";
 import jwtGenerator from "../utils/jwtGenerator";
 
+const encryptPassword = async (password: string) => {
+  const saltRounds = 10;
+  const salt = await bcrypt.genSalt(saltRounds);
+  return [await bcrypt.hash(password, salt), salt];
+};
+
 // const create: RequestHandler = async (req, res, next) => {
 //   const { body } = req;
 //   const user = new User(body);
@@ -24,13 +30,15 @@ import jwtGenerator from "../utils/jwtGenerator";
 //     });
 //   }
 // };
+
 const create: RequestHandler = async (req, res, next) => {
   const { body } = req;
   const { name, email, password } = body;
   try {
-    const saltRounds = 10;
-    const salt = await bcrypt.genSalt(saltRounds);
-    const bcryptPassword = await bcrypt.hash(password, salt);
+    // const saltRounds = 10;
+    // const salt = await bcrypt.genSalt(saltRounds);
+    // const bcryptPassword = await bcrypt.hash(password, salt);
+    const [bcryptPassword, salt] = await encryptPassword(password);
     //4. enter the user in the database
     const { rows: newUser } = await pool.query(
       "INSERT INTO users (name, email, hashed_password, salt) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -167,6 +175,7 @@ const update = async (req: RequestWithProfile, res: Response) => {
   try {
     let user = req.profile; // get the user from the request object
     const { body } = req; // get the body from the request object
+
     // update the user with the new values
     extend(user, body); // extend the user with the new values, if a value in body already exists, it will be overwritten in the user object
     // console.log(req.body);
@@ -174,15 +183,21 @@ const update = async (req: RequestWithProfile, res: Response) => {
     // console.log(user);
 
     if (!user) return res.status(400).json({ error: "User not found" });
-    user.updated = Date.now();
-    const updatedUser = await user.save(); // this will only save the properties that are in the mongooose schema, so if you add a property c to a schema {a,b}
+    const { name, email, password } = body;
+    const [encryptedPassword, salt] = await encryptPassword(password);
+    const updated = new Date().toISOString();
+    const { rows } = await pool.query(
+      "UPDATE users SET name = $1, email = $2, hashed_password = $3, salt = $4, updated = $5 WHERE _id = $6 RETURNING *",
+      [name, email, encryptedPassword, salt, updated, user._id]
+    );
+    const updatedUser = rows[0];
     updatedUser.hashed_password = undefined;
     // console.log(updatedUser);
     updatedUser.salt = undefined;
     return res.json(updatedUser);
-  } catch (error) {
+  } catch (error: any) {
     return res.status(400).json({
-      error: dbErrorHandler.getErrorMessage(error),
+      error: error.message,
     });
   }
 };
