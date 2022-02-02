@@ -16,9 +16,9 @@ const con = {
 
 export default con;
 
-interface FN<T> {
-  (params: T): T;
-}
-const fn2: FN<string> = (params) => params;
+// interface FN<T> {
+//   (params: T): T;
+// }
+// const fn2: FN<string> = (params) => params;
 
-console.log(!!{});
+// console.log(!!{});
