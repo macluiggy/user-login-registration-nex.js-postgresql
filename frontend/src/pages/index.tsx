@@ -4,6 +4,7 @@ import { Card, CardContent, CardMedia, Typography } from "@mui/material";
 import { SxProps, Theme } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import { path } from "../config";
 // import unicornbikeImg from "../public/unicornbike.jpg";
 // const unicornbikeImg = require("../public/unicornbike.jpg");
 type TUseStyles = {
@@ -68,4 +69,14 @@ const Index = () => {
     </Container>
   );
 };
+
+export async function getStaticProps() {
+  const resonse = await fetch(`${path}/api/users`);
+  const data = await resonse.json();
+  console.log(data, "data");
+
+  return {
+    props: { helo: "hello" },
+  };
+}
 export default Index;
