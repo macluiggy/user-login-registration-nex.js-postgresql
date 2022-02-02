@@ -1,4 +1,4 @@
-const isProduction = !true;
+const isProduction = true;
 export const path = isProduction
-  ? "https://4000-macluiggy-userloginregis-jw8t6ddyvcj.ws-us30.gitpod.io"
+  ? "https://login-registration-postgres.herokuapp.com"
   : "http://localhost:4000";
