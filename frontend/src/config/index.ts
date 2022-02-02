@@ -1,4 +1,4 @@
-const isProduction = true;
+const isProduction = !true;
 export const path = isProduction
-  ? "https://macluiggy-mern-skeleton.herokuapp.com"
-  : "http://localhost:3000";
+  ? "https://4000-macluiggy-userloginregis-jw8t6ddyvcj.ws-us30.gitpod.io"
+  : "http://localhost:4000";

@@ -68,4 +68,8 @@ const Index = () => {
     </Container>
   );
 };
+
+export async function getStaticProps() {
+  const resonse = await fetch();
+}
 export default Index;
