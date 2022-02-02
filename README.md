@@ -6,8 +6,8 @@ Full Stack user registration and login page, this app uses jsonwebtoken to authe
 
 ## Frontend
 
-[click here](https://mern-skeleton-next-js.vercel.app/)
+[click here](https://user-login-registration-nex-js-postgresql.vercel.app/)
 
 ## Backend
 
-[click here](https://macluiggy-mern-skeleton.herokuapp.com/)
+[click here](https://login-registration-postgres.herokuapp.com)
