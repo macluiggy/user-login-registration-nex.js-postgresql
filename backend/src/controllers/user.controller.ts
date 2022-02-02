@@ -6,12 +6,13 @@ import { RequestWithProfile } from "../types";
 import pool from "../db";
 import bcrypt from "bcrypt";
 import jwtGenerator from "../utils/jwtGenerator";
+import encryptPassword from "../utils/ecryptPassword";
 
-const encryptPassword = async (password: string) => {
-  const saltRounds = 10;
-  const salt = await bcrypt.genSalt(saltRounds);
-  return [await bcrypt.hash(password, salt), salt];
-};
+// const encryptPassword = async (password: string) => {
+//   const saltRounds = 10;
+//   const salt = await bcrypt.genSalt(saltRounds);
+//   return [await bcrypt.hash(password, salt), salt];
+// };
 
 // const create: RequestHandler = async (req, res, next) => {
 //   const { body } = req;

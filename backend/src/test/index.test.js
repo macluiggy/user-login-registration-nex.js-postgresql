@@ -11,16 +11,6 @@ describe("it should pass", () => {
 });
 
 describe("should pass the server request", () => {
-  it("should return 200", (done) => {
-    chai
-      .request(server)
-      .get("/")
-      .end((err, res) => {
-        chai.expect(res.status).to.equal(200);
-        assert.equal(res.text, "Hello World!");
-        done();
-      });
-  });
   it("Should pass the test from /api/hello", (done) => {
     chai
       .request(server)

@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
+import validEmail from "../utils/validEmail";
 
 export default (req: Request, res: Response, next: NextFunction) => {
   const { email, name, password } = req.body;
   console.log(req.path);
-  function validEmail(userEmail: string) {
-    return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail);
-  }
+  // function validEmail(userEmail: string) {
+  //   return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userEmail);
+  // }
 
   if (req.path.match(/\/users\/?/g)) {
     // if the path is register
