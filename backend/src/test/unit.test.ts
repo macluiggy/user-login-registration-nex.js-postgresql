@@ -1,14 +1,11 @@
 import chai from "chai";
-import chaiHttp from "chai-http";
-import server from "../index";
 import validEmail from "utils/validEmail";
 import areCredentialAvailable from "../utils/areCredentialsAvailable";
 import encryptPassword from "../utils/ecryptPassword";
 const assert = chai.assert;
-chai.use(chaiHttp);
 
 describe("Unit tests", () => {
-  describe("Basic assertions", () => {
+  describe("Functions used in the backend app", () => {
     it("Verify if the eamil is valid or invalid", () => {
       assert.isTrue(validEmail("luiggy@gmail.com"));
       assert.isFalse(validEmail("luiggy@gmail"));
@@ -30,7 +27,7 @@ describe("Unit tests", () => {
     it("Check if the password is encrypted", async () => {
       const arr = await encryptPassword("password");
       const [hashed_password, salt] = arr;
-      console.log(arr);
+      // console.log(arr);
       assert.isArray(arr);
       assert.isTrue(arr.length > 0);
       assert.isNotNull(hashed_password);

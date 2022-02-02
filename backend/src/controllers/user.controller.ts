@@ -7,6 +7,8 @@ import pool from "../db";
 import bcrypt from "bcrypt";
 import jwtGenerator from "../utils/jwtGenerator";
 import encryptPassword from "../utils/ecryptPassword";
+import dotenv from "dotenv";
+dotenv.config();
 
 // const encryptPassword = async (password: string) => {
 //   const saltRounds = 10;
@@ -194,10 +196,16 @@ const update = async (req: RequestWithProfile, res: Response) => {
       [name, email, encryptedPassword, salt, updated, user._id]
     );
     const updatedUser = rows[0];
-    updatedUser.hashed_password = undefined;
-    // console.log(updatedUser);
-    updatedUser.salt = undefined;
-    return res.json({ message: "User updated successfully", updatedUser });
+    if (process.env.NODE_ENV !== "test") {
+      updatedUser.hashed_password = undefined;
+      // console.log(updatedUser);
+      updatedUser.salt = undefined;
+    }
+
+    return res.json({
+      message: "User updated successfully",
+      updatedUser,
+    });
   } catch (error: any) {
     return res.status(400).json({
       error: error.message,

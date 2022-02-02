@@ -1,4 +1,5 @@
-const areCredentialAvailable = (credentials: string[]): boolean =>
-  credentials.every(Boolean);
+const areCredentialAvailable = (
+  credentials: (string | null | undefined)[]
+): boolean => credentials.every(Boolean);
 
 export default areCredentialAvailable;
