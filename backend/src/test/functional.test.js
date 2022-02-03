@@ -27,17 +27,17 @@ describe("Testing the api endpoints", () => {
         .post(apiUsers)
         .send({
           name: "",
-          email: "",
-          password: "",
+          email: "emai@email.com",
+          password: "password",
         })
         .end((err, res) => {
           console.log(res.body);
-          assert.equal(res.status, 400);
-          assert.equal(res.body.message, "Missing credentials");
+          assert.equal(res.status, 401);
+          assert.equal(res.body.error, "Missing credential(s)");
           done();
         });
     });
-    it("Test creating ", (done) => {
+    it("Test JAFLJFDLKJF  ", (done) => {
       chai
         .request(server)
         .post(apiUsers)
@@ -51,6 +51,26 @@ describe("Testing the api endpoints", () => {
           // console.log(res.body, "posting");
           // let token =
           //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NDM3NDQzNzd9.eynRlSLA9r4Fg9AWkdKhR3vwCBeInJkBkhEBeZmdX2E";
+
+          // testing creating an user with an existing email
+          chai
+            .request(server)
+            .post(apiUsers)
+            .send({
+              name: "testing",
+              email: "testing@gmail.com",
+              password: "testing",
+            })
+            .end((err, res) => {
+              // console.log(
+              //   res.body,
+              //   "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQUIIIIIIIIIIIIIIIIIIIIIIIIIIIII"
+              // );
+              // console.log(err, "err");
+              assert.equal(res.status, 409);
+              assert.equal(res.body.error, "email already exists");
+            });
+
           chai
             .request(server)
             .post("/auth/signin")
@@ -59,6 +79,7 @@ describe("Testing the api endpoints", () => {
               // console.log(res.body, "signing in");
               assert.equal(res.status, 200);
               assert.isObject(res.body);
+
               //getting the user
               chai
                 .request(server)
@@ -66,7 +87,11 @@ describe("Testing the api endpoints", () => {
                 .set("Authorization", `Bearer ${res.body.token}`)
                 .end((err, res) => {
                   // console.log(res.body, "getting the user");
+                  // console.log(
+                  //   "HOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOLAAAAAAAAAAAAAAAAAAAAAAAAA"
+                  // );
                 });
+
               // updating the user
               chai
                 .request(server)

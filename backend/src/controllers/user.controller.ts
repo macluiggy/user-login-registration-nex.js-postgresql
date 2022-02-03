@@ -53,8 +53,8 @@ const create: RequestHandler = async (req, res, next) => {
       .status(200)
       .json({ message: "Successfully signed up!", newUser: newUser[0] });
   } catch (error: any) {
-    console.log(error);
-    return res.status(400).json({
+    if (process.env.NODE_ENV !== "test") console.log(error);
+    return res.status(409).json({
       error: dbErrorHandler.getErrorMessage(error),
     });
   }
