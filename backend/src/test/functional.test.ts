@@ -188,5 +188,21 @@ describe("Testing the api endpoints", () => {
           done();
         });
     });
+
+    it("Should return and error message when using an user that does not exists", (done) => {
+      chai
+        .request(server)
+        .post("/auth/signin")
+        .send({
+          email: "thisemaildoesntexits@gmail.com",
+          password: "testing",
+        })
+        .end((err, res) => {
+          console.log(res.body, "AAAAQUIIII");
+          assert.equal(res.status, 401);
+          assert.equal(res.body.error, "User not found");
+          done();
+        });
+    });
   });
 });
