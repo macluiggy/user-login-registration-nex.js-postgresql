@@ -61,7 +61,7 @@ const Users = ({ users: _users }) => {
         </Typography>
         <List dense>
           {loading ? (
-            <div>loading</div>
+            <div>Loading...</div>
           ) : (
             // "hola"
             users.map(({ _id, name }, i) => {

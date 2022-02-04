@@ -60,7 +60,7 @@ const Index = () => {
           />
         </CardMedia>
         <CardContent>
-          <Typography>Welcome to the MERN Skeleton home page.</Typography>
+          <Typography>Welcome to the PERN Skeleton home page.</Typography>
           {/* <Link href={"/users"}>
             <a>Users</a>
           </Link> */}
