@@ -28,7 +28,7 @@ export default function Menu() {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" color="inherit">
-          MERN Skeleton
+          PERN Skeleton
         </Typography>
         <Link href="/">
           <a>
